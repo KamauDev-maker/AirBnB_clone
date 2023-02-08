@@ -45,5 +45,5 @@ EOF help quit
 (hbnb)
 $
 ```
-##Author
+## Author
 - [Oscar Kamau](https://github.com/KamauDev-maker "Oscar Kamau")
