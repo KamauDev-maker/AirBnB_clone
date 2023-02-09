@@ -4,12 +4,13 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
     """command interpreter"""
     prompt = '(hbnb)'
-    __cls = ["BaseModel"]
+    __cls = ["BaseModel", "User"]
 
     def do_quit(self, line):
         return True
@@ -29,6 +30,8 @@ class HBNBCommand(cmd.Cmd):
         else:
             if args[0] == "BaseModel":
                 inst = BaseModel()
+            elif args[0] == "User":
+                inst = User()
             print(inst.id)
 
     def do_show(self, line):
