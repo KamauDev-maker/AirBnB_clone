@@ -1,12 +1,23 @@
 import unittest
 import uuid
+import json
+import os
 from datetime import datetime
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
 
 class TestBaseModel(unittest.TestCase):
     """
     Test Cases
     """
+    
+    def setUp(self):
+        pass
+    
+    def tearDown(self) -> None:
+        FileStorage._FileStorage__objects = {}
+        if os.path.exists(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
     
     def test_init(self):
         b1 = BaseModel()
@@ -41,6 +52,19 @@ class TestBaseModel(unittest.TestCase):
         self.assertIn("'id': '123456'", bmstr)
         self.assertIn("'created_at': " + dt_repr, bmstr)
         self.assertIn("'updated_at': " + dt_repr, bmstr)
+        
+    def test_save_storage(self):
+        """Tests that storage.save() is called from save()."""
+        b = BaseModel()
+        b.save()
+        key = "{}.{}".format(type(b).__name__, b.id)
+        d = {key: b.to_dict()}
+        self.assertTrue(os.path.isfile(FileStorage._FileStorage__file_path))
+        with open(FileStorage._FileStorage__file_path,
+                  "r", encoding="utf-8") as f:
+            self.assertEqual(len(f.read()), len(json.dumps(d)))
+            f.seek(0)
+            self.assertEqual(json.load(f), d)
 
 if __name__ == "__main__":
     unittest.main()       

@@ -4,6 +4,7 @@ Defines a FileStorage class
 """
 
 import json
+import os
 from models.base_model import BaseModel
 
 
@@ -20,7 +21,7 @@ class FileStorage():
         """
         return FileStorage.__objects
     
-    def  new(self):
+    def  new(self, obj):
         """
         sets in __objects the obj with key <obj class name>.id
         """
