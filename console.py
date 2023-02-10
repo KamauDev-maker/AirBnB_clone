@@ -2,6 +2,7 @@
 """ defines the entry point of command interpreter"""
 
 import cmd
+import models
 from models.base_model import BaseModel
 from models import storage
 from models.user import User
