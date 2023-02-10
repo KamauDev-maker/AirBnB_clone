@@ -23,7 +23,6 @@ class BaseModel():
                                                      '%Y-%m-%dT%H:%M:%S.%f')
             kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
-            del kwargs['__class__']
             self.__dict__.update(kwargs)
 
     def __str__(self):
