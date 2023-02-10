@@ -13,38 +13,40 @@ class BaseModel():
     """
     
     def __init__(self, *args, **kwargs):
-        if len(kwargs) > 0:
-            for key, value in kwargs.items():
-                if key == '__class__':
-                    continue
-                if key == 'created_at' or key == 'updated_at':
-                    value = datetime.fromisoformat(value)
-                setattr(self, key, value)
-            return
-        
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
-        
-        models.storage.new(self)
-    
+        if not kwargs:
+            from models import storage
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            storage.new(self)
+        else:
+            kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
+                                                     '%Y-%m-%dT%H:%M:%S.%f')
+            
+            kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
+                                                     '%Y-%m-%dT%H:%M:%S.%f')
+            
+            del kwargs['__class__']
+            self.__dict__.update(kwargs)
+            
     def __str__(self):
-        """
-        Returns a string representation of the instance
-        """
-        return "[{}] ({}) {}".format(
-            type(self).__name__, self.id, self.__dict__)
-        
-    def to_dict(self):
-        """returns a dict containing all the keys/values of instance"""
-        dict = {**self.__dict__}
-        dict['__class__'] = type(self).__name__
-        dict['created_at'] =dict['created_at'].isoformat()
-        dict['updated_at'] =dict['updated_at'].isoformat()
-        
-        return dict
+        """"Returns a string representation of instance"""
+        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
+        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
     
     def save(self):
+        """saves the updated object"""
+        from models import storage
         self.updated_at = datetime.now()
-        models.storage.save()
+        storage.save()
+        
+    def to_dict(self):
+        """"Convert the instance to a dictionary"""
+        dictionary = {}
+        dictionary.update(self.__dict__)
+        dictionary.update({'__class_':
+                          (str(type(self)).split('.')[-1]).split('\'')})
+        dictionary['created_at'] = self.created_at.isoformat()
+        dictionary['updated_at'] = self.updated_at.isoformat()
+        return dictionary
         
