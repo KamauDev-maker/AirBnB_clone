@@ -13,10 +13,7 @@ from models.amenity import Amenity
 from models.review import Review
 import shlex
 
-class HBNBCommand(cmd.Cmd):
-    """command interpreter"""
-    prompt = '(hbnb)'
-    classes = {
+classes = {
         'BaseModel': BaseModel,
         'User': User,
         'State': State,
@@ -25,6 +22,11 @@ class HBNBCommand(cmd.Cmd):
         'Place': Place,
         'Review': Review,
     }
+
+class HBNBCommand(cmd.Cmd):
+    """command interpreter"""
+    prompt = '(hbnb)'
+    
 
     def do_quit(self, args):
         return True
