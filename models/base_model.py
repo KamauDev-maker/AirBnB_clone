@@ -11,7 +11,6 @@ class BaseModel():
     """
     base class which defines all methods for other classes
     """
-    
     def __init__(self, *args, **kwargs):
         if not kwargs:
             from models import storage
@@ -22,24 +21,22 @@ class BaseModel():
         else:
             kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
-            
             kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
-            
             del kwargs['__class__']
             self.__dict__.update(kwargs)
-            
+
     def __str__(self):
         """"Returns a string representation of instance"""
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
         return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
-    
+
     def save(self):
         """saves the updated object"""
         from models import storage
         self.updated_at = datetime.now()
         storage.save()
-        
+
     def to_dict(self):
         """"Convert the instance to a dictionary"""
         dictionary = {}
@@ -49,4 +46,3 @@ class BaseModel():
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
         return dictionary
-        
